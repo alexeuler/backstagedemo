@@ -10,11 +10,18 @@ import {
   OAuthRequestManager,
   storageApiRef,
   WebStorage,
+  GithubAuth,
+  githubAuthApiRef,
 } from '@backstage/core';
 
 import { catalogApiRef, CatalogClient } from '@backstage/plugin-catalog';
 
 import { scaffolderApiRef, ScaffolderApi } from '@backstage/plugin-scaffolder';
+
+import {
+  GithubActionsClient,
+  githubActionsApiRef,
+} from '@backstage/plugin-github-actions';
 
 export const apis = (config: ConfigApi) => {
   // eslint-disable-next-line no-console
@@ -31,7 +38,16 @@ export const apis = (config: ConfigApi) => {
   );
 
   builder.add(storageApiRef, WebStorage.create({ errorApi }));
-  builder.add(oauthRequestApiRef, new OAuthRequestManager());
+  const oauthRequestApi = builder.add(oauthRequestApiRef, new OAuthRequestManager());
+  const githubAuthApi = builder.add(
+    githubAuthApiRef,
+    GithubAuth.create({
+      backendUrl,
+      basePath: '/auth/',
+      oauthRequestApi,
+    }),
+  );
+  builder.add(githubActionsApiRef, new GithubActionsClient());
 
   builder.add(
     catalogApiRef,
