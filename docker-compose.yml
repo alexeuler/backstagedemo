@@ -1,0 +1,16 @@
+version: "3"
+
+volumes:
+  postgres-data:
+
+services:
+  db:
+    image: postgres:10
+    environment:
+      POSTGRES_USER: backstagedemo
+      POSTGRES_PASSWORD: backstagedemo
+      POSTGRES_DATABASE: backstagedemo_dev
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432

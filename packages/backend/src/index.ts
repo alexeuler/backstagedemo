@@ -21,6 +21,9 @@ import scaffolder from './plugins/scaffolder';
 import proxy from './plugins/proxy';
 import techdocs from './plugins/techdocs';
 import { PluginEnvironment } from './types';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 function makeCreateEnv(loadedConfigs: AppConfig[]) {
   const config = ConfigReader.fromConfigs(loadedConfigs);
@@ -41,7 +44,7 @@ function makeCreateEnv(loadedConfigs: AppConfig[]) {
     };
     const database = knex(knexConfig);
     database.client.pool.on('createSuccess', (_eventId: any, resource: any) => {
-      resource.run('PRAGMA foreign_keys = ON', () => {});
+      resource.run('PRAGMA foreign_keys = ON', () => { });
     });
     return { logger, database, config };
   };
@@ -77,5 +80,6 @@ async function main() {
 module.hot?.accept();
 main().catch(error => {
   console.error(`Backend failed to start up, ${error}`);
+  console.error(error.stack);
   process.exit(1);
 });
